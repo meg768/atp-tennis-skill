@@ -1,6 +1,6 @@
 ---
 name: atp-tennis
-description: Query Magnus's ATP MariaDB database for players, rankings, match history, statistics, and Tennis Abstract Elo probabilities and odds. Use across the tennis projects when an answer needs this database or its schema.
+description: Read Magnus's ATP MariaDB database and fetch current Svenska Spel ATP odds directly without a browser. Use for tennis statistics, match history, rankings, TA probabilities, and odds comparisons across the tennis projects.
 ---
 
 # ATP tennis
@@ -8,6 +8,7 @@ description: Query Magnus's ATP MariaDB database for players, rankings, match hi
 Use the bundled `scripts/database.py` to read the ATP database directly. Resolve
 paths relative to this skill's directory, not the calling project's directory.
 The script resolves its own directory even when the skill is symlinked.
+For Svenska Spel odds, use the bundled HTTP fetcher described below.
 
 ## Connection and queries
 
@@ -43,6 +44,19 @@ database mutations are outside this tool's scope. This skill does not grant
 permission to change data or schema; follow the user's authorization. For a
 database-level security boundary, use an account with read-only grants.
 
+## Current Svenska Spel odds
+
+Run `<skill>/.venv/bin/python <skill>/scripts/svenskaspel.py` to fetch the
+direct Svenska Spel/Kambi ATP offering feed. It needs no login, API key,
+or browser. Use this script first for Svenska Spel odds and match status;
+do not open Svenska Spel's website for these tasks. If the direct request
+fails, report the failure rather than silently switching to a browser or
+reusing old prices. Browser use for Svenska Spel requires a user request.
+
+Read [references/svenskaspel.md](references/svenskaspel.md) when extracting
+match-winner odds or interpreting market and event status. Save the timestamped
+JSON in the calling project's analysis directory when evidence is needed.
+
 ## Working with tennis data
 
 - Read [references/schema.md](references/schema.md) for tables, joins,
@@ -59,7 +73,8 @@ database-level security boundary, use an account with read-only grants.
 - Do not use `tennis.egelberg.se`, including as a fallback or proxy. Fetch
   fresh external information from ATP, organizers, Tennis Abstract, or the
   relevant odds provider when the task requires it. Verify access and cite
-  the actual source; this skill itself provides database access only.
+  the actual source. This skill bundles database access and the direct
+  Svenska Spel feed; other external sources need separate verification.
 - Keep betting portfolios, stake sizes, selection windows, and `ping`
   behavior in the calling project. Consult that project's instructions.
   This shared skill neither places bets nor registers recommendations.
